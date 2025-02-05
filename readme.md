@@ -1,11 +1,10 @@
-# AWS Bedrock Chatbot
+# AWS Bedrock E-Mail Response Service
 
-A chatbot that uses AWS Bedrock to automatically respond to customer inquiries. This open-source project demonstrates how to integrate generative AI into a simple application.
+A e-mail response service that uses AWS Bedrock to automatically respond to customer inquiries. This open-source project demonstrates how to integrate generative AI into a simple application.
 
 ## Features
-- Automatic response to customer inquiries using AWS Bedrock
+- Automatic response to e-mails using AWS Bedrock
 - Utilizes Claude (Anthropic) as the AI model
-- Easy integration into existing systems
 - Example code in Python
 
 ## Prerequisites
@@ -16,8 +15,8 @@ A chatbot that uses AWS Bedrock to automatically respond to customer inquiries. 
 ## Installation
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-user/aws-bedrock-chatbot.git
-   cd aws-bedrock-chatbot
+   git clone https://github.com/tomas-st/bedrock-ai-agent-for-email.git
+   cd bedrock-ai-agent-for-email
    ```
 2. **Install Python dependencies:**
    ```sh
@@ -26,6 +25,11 @@ A chatbot that uses AWS Bedrock to automatically respond to customer inquiries. 
 3. **Make sure to have your AWS credentials setup:**
    ```sh
    aws configure
+   ```
+
+## Alternative local Installation with docker compose
+   ```sh
+   docker compose up -d
    ```
 
 ## Usage

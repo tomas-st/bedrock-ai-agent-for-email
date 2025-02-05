@@ -1,0 +1,14 @@
+services:
+  chatbot:
+    build: .
+    container_name: bedrock-ai-agent-for-email
+    environment:
+      - AWS_ACCESS_KEY_ID=your_access_key
+      - AWS_SECRET_ACCESS_KEY=your_secret_key
+      - AWS_DEFAULT_REGION=eu-central-1
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python app.py
+    stdin_open: true
+    tty: true
