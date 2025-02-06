@@ -1,17 +1,26 @@
 import boto3
+import json
 
 # client
 client = boto3.client(service_name='bedrock-runtime', region_name='eu-central-1')
 
 # customer query
-user_query = "Wie lange dauert der Versand meiner Bestellung?"
+user_query = "Warum ist die Erde rund?"
 
 # ask bedrock
 response = client.invoke_model(
-    modelId="anthropic.claude-v2:1",  # Claude AI von Anthropic
+    modelId="amazon.titan-text-express-v1",
     contentType="application/json",
     accept="application/json",
-    body=f'{{"prompt": "{user_query}", "max_tokens_to_sample": 100}}'
+    body=json.dumps({
+        "inputText": user_query,
+        "textGenerationConfig": {
+            "maxTokenCount": 8192,
+            "stopSequences": [],
+            "temperature": 0,
+            "topP": 1
+        }
+    })
 )
 
 # print generated response
