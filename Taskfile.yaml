@@ -41,6 +41,11 @@ tasks:
     cmds:
       - aws lambda invoke --function-name $LAMBDA_FUNCTION_NAME output.json && cat output.json
 
+  docker-compose-up:
+    desc: "Start Docker Compose for the project"
+    cmds:
+      - docker compose up --build -d
+
   all:
     desc: "Run all tasks in sequence (build, push, deploy/update)"
     cmds:
