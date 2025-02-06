@@ -46,6 +46,14 @@ tasks:
     cmds:
       - docker compose up --build -d
 
+  test.bedrock-post:
+    desc: "Test the Bedrock POST endpoint"
+    cmds:
+      - >
+        curl -X POST http://localhost:5000/ask 
+        -H "Content-Type: application/json" 
+        -d '{"query": "Scheint morgen die Sonne?"}'
+
   all:
     desc: "Run all tasks in sequence (build, push, deploy/update)"
     cmds:
