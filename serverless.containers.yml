@@ -1,0 +1,44 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: stillforward
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+# app: bedrock-ai-agent-for-email
+name: bedrock-ai-agent
+
+# namespace: stillforward
+
+deployment:
+  type: awsApi@1.0
+
+containers:
+  # Web (Frontend)
+  # service-web:
+  #   src: ./web
+  #   routing:
+  #     domain: acmeinc.com
+  #     pathPattern: /*
+  #   compute:
+  #     type: awsLambda
+  # # API (Backend)
+  service-api:
+    src: ./api
+    routing:
+      domain: test123.tomas.de
+      pathPattern: /*
+      pathHealthCheck: /health
+    compute:
+      # type: awsFargateEcs
+      type: awsLambda
+      # awsFargateEcs:
+      #   memory: 4096
+      #   cpu: 1024
+      # environment:
+      # HELLO: world
+      # awsIam:
+      #   customPolicy:
+      #     Version: "2012-10-17"
+      #     Statement:
+      #       - Effect: Allow
+      #         Action:
+      #           - dynamodb:GetItem
+      #         Resource:
+      #           - "*"

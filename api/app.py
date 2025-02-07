@@ -15,7 +15,7 @@ client = boto3.client(
     region_name=os.getenv('AWS_REGION')
 )
 
-@app.route('/ask', methods=['POST'])
+@app.route('/api/ask', methods=['POST'])
 def ask_bedrock():
     user_query = request.json.get('query')
     
@@ -38,9 +38,13 @@ def ask_bedrock():
     # return generated response
     return jsonify(response['body'].read().decode("utf-8"))
 
-@app.route('/hello', methods=['GET'])
+# @app.route('/hello', methods=['GET'])
+# def hello_world():
+#     return "Hello, World!"
+
+@app.route('/health', methods=['GET'])
 def hello_world():
-    return "Hello, World!"
+    return "Healthy"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

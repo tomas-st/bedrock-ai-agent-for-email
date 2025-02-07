@@ -1,63 +1,109 @@
-version: '3'
+version: "3"
 
-dotenv: ['.env']
+dotenv: [".env"]
 
 tasks:
-  build:
-    desc: "Build the Docker image for AWS Lambda"
+  setup:
+    desc: "Installiert alle Abhängigkeiten (inkl. dev-requirements)"
     cmds:
-      - docker build -t $ECR_REPO_NAME .
-
-  push:
-    desc: "Push the image to AWS ECR"
-    cmds:
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - docker tag $ECR_REPO_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest
-
-  create-ecr:
-    desc: "Create an ECR repository if it does not exist"
-    cmds:
-      - aws ecr describe-repositories --repository-names $ECR_REPO_NAME || aws ecr create-repository --repository-name $ECR_REPO_NAME
-
-  deploy-lambda:
-    desc: "Deploy the function to AWS Lambda"
-    cmds:
-      - aws lambda create-function --function-name $LAMBDA_FUNCTION_NAME \
-          --package-type Image \
-          --code ImageUri=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest \
-          --role $LAMBDA_EXECUTION_ROLE \
-          --timeout 30 \
-          --memory-size 512 || true
-
-  update-lambda:
-    desc: "Update the Lambda function with the latest image"
-    cmds:
-      - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME \
-          --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest
-
-  invoke:
-    desc: "Invoke the Lambda function for testing"
-    cmds:
-      - aws lambda invoke --function-name $LAMBDA_FUNCTION_NAME output.json && cat output.json
+      - pip install -r requirements.txt
+      - pip install -r requirements-dev.txt
+      - npm install -g serverless
+      - mkdir -p ~/.docker/cli-plugins/
+      - curl -L https://github.com/docker/buildx/releases/download/v0.10.4/buildx-v0.10.4.linux-amd64 -o ~/.docker/cli-plugins/docker-buildx
 
   docker-compose-up:
+    aliases:
+      - dev
     desc: "Start Docker Compose for the project"
     cmds:
       - docker compose up --build -d
+  # dev:
+  #   desc: "Startet die Entwicklungsumgebung"
+  #   cmds:
+  #     - task: setup
+  #     - python app.py  # oder das, was deine App startet
+
+  docker-compose-down:
+    desc: "Start Docker Compose for the project"
+    cmds:
+      - docker compose down --remove-orphans
 
   test.bedrock-post:
     desc: "Test the Bedrock POST endpoint"
     cmds:
       - >
-        curl -X POST http://localhost:5000/ask 
+        curl -X POST http://localhost:3001/api/ask 
         -H "Content-Type: application/json" 
         -d '{"query": "Scheint morgen die Sonne?"}'
 
-  all:
-    desc: "Run all tasks in sequence (build, push, deploy/update)"
+  serverless-dev:
+    desc: "Start the Serverless Framework development environment"
     cmds:
-      - task: create-ecr
-      - task: build
-      - task: push
-      - task: deploy-lambda
+      - serverless dev --stage dev
+
+  deploy:
+    cmds:
+      - serverless deploy
+    desc: Deploy the application using Serverless Framework
+
+  remove:
+    cmds:
+      - serverless remove
+    desc: Remove the deployed application
+
+  invoke:
+    cmds:
+      - serverless invoke -f app
+    desc: Invoke the deployed function
+
+  logs:
+    cmds:
+      - serverless logs -f app
+    desc: Fetch the logs for the deployed function
+
+  # deploy-lambda:
+  #   desc: "Deploy the function to AWS Lambda"
+  #   cmds:
+  #     - aws lambda create-function --function-name $LAMBDA_FUNCTION_NAME \
+  #       --package-type Image \
+  #       --code ImageUri=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest \
+  #       --role $LAMBDA_EXECUTION_ROLE \
+  #       --timeout 30 \
+  #       --memory-size 512 || true
+
+  # create-ecr:
+  #   desc: "Create an ECR repository if it does not exist"
+  #   cmds:
+  #     - aws ecr describe-repositories --repository-names $ECR_REPO_NAME || aws ecr create-repository --repository-name $ECR_REPO_NAME
+
+  # build:
+  #   desc: "Build the Docker image for AWS Lambda"
+  #   cmds:
+  #     - docker build -t $ECR_REPO_NAME .
+
+  # push:
+  #   desc: "Push the image to AWS ECR"
+  #   cmds:
+  #     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+  #     - docker tag $ECR_REPO_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest
+  #     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest
+
+  # update-lambda:
+  #   desc: "Update the Lambda function with the latest image"
+  #   cmds:
+  #     - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME \
+  #       --image-uri $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME:latest
+
+  # invoke:
+  #   desc: "Invoke the Lambda function for testing"
+  #   cmds:
+  #     - aws lambda invoke --function-name $LAMBDA_FUNCTION_NAME output.json && cat output.json
+
+  # all:
+  #   desc: "Run all tasks in sequence (build, push, deploy/update)"
+  #   cmds:
+  #     - task: create-ecr
+  #     - task: build
+  #     - task: push
+  #     - task: deploy-lambda

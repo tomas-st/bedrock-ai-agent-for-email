@@ -12,6 +12,7 @@ A e-mail response service that uses AWS Bedrock to automatically respond to cust
 - Python 3.x installed
 - Enable the corresponding model for your AWS region on https://console.aws.amazon.com/bedrock/ (anthropic.claude-v2:1)
 - We are using task instead of make (brew install go-task/tap/go-task)
+- Account at https://serverless.com/
 
 ## Installation
 1. **Clone the repository:**

@@ -1,0 +1,29 @@
+# # "org" ensures this Service is used with the correct Serverless Framework Access Key.
+# org: stillforward
+# # "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+# app: bedrock-ai-agent-for-email
+# service: flask-app
+
+# provider:
+#   name: aws
+#   runtime: python3.8
+#   region: ${env:AWS_REGION}
+
+# functions:
+#   app:
+#     handler: handler.lambda_handler
+#     events:
+#       - http:
+#           path: /
+#           method: any
+#       - http:
+#           path: /{proxy+}
+#           method: any
+
+# plugins:
+#   - serverless-wsgi
+
+# custom:
+#   wsgi:
+#     app: app.app
+#     packRequirements: false
