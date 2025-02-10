@@ -9,36 +9,14 @@ name: bedrock-ai-agent
 deployment:
   type: awsApi@1.0
 
+   
 containers:
-  # Web (Frontend)
-  # service-web:
-  #   src: ./web
-  #   routing:
-  #     domain: acmeinc.com
-  #     pathPattern: /*
-  #   compute:
-  #     type: awsLambda
-  # # API (Backend)
-  service-api:
-    src: ./api
+  service:
+    src: ./service
     routing:
-      domain: test123.tomas.de
       pathPattern: /*
       pathHealthCheck: /health
+    environment:
+      HELLO: world
     compute:
-      # type: awsFargateEcs
       type: awsLambda
-      # awsFargateEcs:
-      #   memory: 4096
-      #   cpu: 1024
-      # environment:
-      # HELLO: world
-      # awsIam:
-      #   customPolicy:
-      #     Version: "2012-10-17"
-      #     Statement:
-      #       - Effect: Allow
-      #         Action:
-      #           - dynamodb:GetItem
-      #         Resource:
-      #           - "*"

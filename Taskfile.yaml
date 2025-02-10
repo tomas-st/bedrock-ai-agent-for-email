@@ -3,6 +3,43 @@ version: "3"
 dotenv: [".env"]
 
 tasks:
+  dev:
+    desc: Start the development environment
+    cmds:
+      - serverless dev --region $AWS_REGION
+
+  offline:
+    desc: Start the development environment
+    cmds:
+      - serverless offline --region $AWS_REGION
+
+  deploy:
+    desc: Deploy the serverless application
+    cmds:
+      - serverless deploy --region $AWS_REGION
+
+  remove:
+    desc: Remove the serverless application
+    cmds:
+      - serverless remove --region $AWS_REGION
+
+  remove-all:
+    desc: Remove the serverless application and shared infrastructure
+    cmds:
+      - serverless remove --all --region $AWS_REGION
+
+  setup-serverless:
+    desc: Install prerequesits and dependencies
+    cmds:
+      - npm install -g serverless
+      # - serverless plugin install -n serverless-python-requirements
+      - cd service && pip install -r requirements.txt
+
+  check-env:
+    desc: Check if AWS_REGION is set
+    cmds:
+      - echo "AWS_REGION is set to $AWS_REGION"
+
   setup:
     desc: "Installiert alle Abhängigkeiten (inkl. dev-requirements)"
     cmds:
